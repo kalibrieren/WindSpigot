@@ -184,7 +184,7 @@ public class WindSpigotConfig {
 		c.addComment("settings.event.fire-player-move-event", "Enables the player move event.");
 		c.addComment("settings.event.fire-leaf-decay-event", "Enables the leaf decay event.");
 		c.addComment("settings.brand-name", "Changes the brand name of the server.\nThis will show in statistics, server lists, client crashes,\n and in the client debug screen. (accessed by pressing F3)");
-		c.addComment("settings.stop-decoding-itemstack-on-place", "Disables decoding itemstacks when not needed.");
+		c.addComment("settings.stop-decoding-itemstack-on-place", "Disables decoding itemstacks when not needed. May interfere with some plugins, so only enable if you know what you are doing.");
 		c.addComment("settings.anti-crash.enabled", "Kicks players if they try to do an action that could crash the server.");
 		c.addComment("settings.chunk.threads", "The amount of threads used for chunks.");
 		c.addComment("settings.chunk.players-per-thread", "The amount of players for each thread.");
@@ -561,7 +561,7 @@ public class WindSpigotConfig {
 	public static boolean stopDecodingItemStackOnPlace;
 
 	private static void stopDecodingItemStackOnPlace() {
-		stopDecodingItemStackOnPlace = getBoolean("settings.stop-decoding-itemstack-on-place", true);
+		stopDecodingItemStackOnPlace = getBoolean("settings.stop-decoding-itemstack-on-place", false);
 	}
 
 	public static boolean enableAntiCrash;
