@@ -19,7 +19,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet<?>> {
 	}
 
 	protected void a(ChannelHandlerContext ctx, Packet<?> packet, ByteBuf bytebuf) throws Exception {
-		Integer packetId = ctx.channel().attr(NetworkManager.ATTRIBUTE_PROTOCOL).get().getPacketIdForPacket(packet);
+		Integer packetId = ((EnumProtocol) ctx.channel().attr(NetworkManager.c).get()).a(this.c, packet);
 
 		/*
 		 * if (PacketEncoder.a.isDebugEnabled()) {

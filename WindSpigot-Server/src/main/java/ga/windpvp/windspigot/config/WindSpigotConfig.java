@@ -200,8 +200,8 @@ public class WindSpigotConfig {
 		c.addComment("settings.item-dirty-ticks", "Controls the interval for the item-dirty check. Minecraft checks an item every tick to see if it was changed. This can be expensive because it also needs to check all NBT data. Spigot only checks for basic count/data/type data and does a deep check every 20 ticks by default.");
 		c.addComment("settings.tcp-fast-open.enabled", "Enables the TCP_FASTOPEN socket option.");
 		c.addComment("settings.tcp-fast-open.mode", "Options: 0 - Disabled.; 1 - TFO is enabled for outgoing connections (clients).; 2 - TFO is enabled for incoming connections (servers).; 3 - TFO is enabled for both clients and servers.");
-		c.addComment("settings.enable-protocollib-shim", "Enable ProtocolLib network shim. This allows ProtocolLib to work, but requires extra memory. Disable this if you don't use ProtocolLib!");
 		c.addComment("settings.instant-interaction", "Disables delay of all interactions.");
+		c.addComment("settings.allow-bungee-bypass", "Allows joining the server without going through BungeeCord. Don't enable unless you know what you are doing");
 	}
 
 	private static void set(String path, Object val) {
@@ -650,16 +650,11 @@ public class WindSpigotConfig {
 	private static void modeTcpFastOpen() {
 		modeTcpFastOpen = getInt("settings.tcp-fast-open.mode", 1);
 	}
-
-	public static boolean enableProtocolLibShim;
-
-	private static void enableProtocolLibShim() {
-		enableProtocolLibShim = getBoolean("settings.enable-protocollib-shim", true);
-	}
-
+	
 	public static boolean instantPlayInUseEntity;
 
 	private static void instantPlayInUseEntity() {
 		instantPlayInUseEntity = getBoolean("settings.instant-interaction", false);
 	}
+
 }
