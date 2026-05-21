@@ -1149,7 +1149,11 @@ public final class CraftServer implements Server {
 		if (e.isCancelled()) {
 			return false;
 		}
-
+		// SportPaper start - unload world before nullifying chunkProvider and chunkLoader
+		worlds.remove(world.getName().toLowerCase());
+		console.worlds.remove(handle);
+		// SportPaper end
+		
 		if (save) {
 			try {
 				handle.save(true, null);
@@ -1176,9 +1180,6 @@ public final class CraftServer implements Server {
 			chunkProviderServer.chunkProvider = null;
 			chunkProviderServer.chunks.clear();
 		}
-
-		worlds.remove(world.getName().toLowerCase());
-		console.worlds.remove(handle);
 
 		// KigPaper start - fix memory leak
 		CraftingManager craftingManager = CraftingManager.getInstance();
