@@ -71,6 +71,8 @@ public class KnockbackConfig {
 			windpvpProfile.setEggVertical(0.425);
 			windpvpProfile.setExtraVertical(0.085);
 			windpvpProfile.setWTapExtraVertical(0.085);
+			
+			windpvpProfile.save(true);
 		}
 		
 		if (!keys.contains("hypixel")) {
