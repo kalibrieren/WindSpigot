@@ -54,29 +54,23 @@ public class KnockbackConfig {
 			// WIP custom profile
 			final KnockbackProfile windpvpProfile = new CraftKnockbackProfile("windpvp");
 			
-			windpvpProfile.setRodHorizontal(0.7);
-			windpvpProfile.setRodVertical(0.5);
-			windpvpProfile.setSnowballHorizontal(0.7);
-			windpvpProfile.setSnowballHorizontal(0.5);
-			windpvpProfile.setEggHorizontal(0.7);
-			windpvpProfile.setEggVertical(0.5);
-			windpvpProfile.setArrowHorizontal(0.5);
-			
-			windpvpProfile.setFrictionHorizontal(1.85);
-			windpvpProfile.setFrictionVertical(2.0);
-			
-			windpvpProfile.setHorizontal(0.1);
-			windpvpProfile.setVertical(0.3);
-			
-			windpvpProfile.setExtraHorizontal(0.75);
-			windpvpProfile.setExtraVertical(0.1);
-			
-			windpvpProfile.setWTapExtraHorizontal(0.76);
-			windpvpProfile.setWTapExtraVertical(0.1);
-			
-			windpvpProfile.setAddHorizontal(0.04);	
-			
-			windpvpProfile.save(true);
+			windpvpProfile.setHorizontal(0.35);
+			windpvpProfile.setRodHorizontal(0.425);
+			windpvpProfile.setArrowHorizontal(0.425);
+			windpvpProfile.setPearlHorizontal(0.35);
+			windpvpProfile.setSnowballHorizontal(0.425);
+			windpvpProfile.setEggHorizontal(0.425);
+			windpvpProfile.setExtraHorizontal(0.425);
+			windpvpProfile.setWTapExtraHorizontal(0.425);
+
+			windpvpProfile.setVertical(0.35);
+			windpvpProfile.setRodVertical(0.425);
+			windpvpProfile.setArrowVertical(0.425);
+			windpvpProfile.setPearlVertical(0.35);
+			windpvpProfile.setSnowballVertical(0.425);
+			windpvpProfile.setEggVertical(0.425);
+			windpvpProfile.setExtraVertical(0.085);
+			windpvpProfile.setWTapExtraVertical(0.085);
 		}
 		
 		if (!keys.contains("hypixel")) {
