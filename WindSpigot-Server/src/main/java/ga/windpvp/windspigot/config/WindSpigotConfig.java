@@ -200,6 +200,7 @@ public class WindSpigotConfig {
 		c.addComment("settings.tcp-fast-open.enabled", "Enables the TCP_FASTOPEN socket option.");
 		c.addComment("settings.tcp-fast-open.mode", "Options: 0 - Disabled.; 1 - TFO is enabled for outgoing connections (clients).; 2 - TFO is enabled for incoming connections (servers).; 3 - TFO is enabled for both clients and servers.");
 		c.addComment("settings.instant-interaction", "Disables delay of all interactions.");
+        c.addComment("settings.disable-disconnect-spam", "Disables that players can be kicked because of disconnect.spam.");
 	}
 
 	private static void set(String path, Object val) {
@@ -648,5 +649,11 @@ public class WindSpigotConfig {
 	private static void instantPlayInUseEntity() {
 		instantPlayInUseEntity = getBoolean("settings.instant-interaction", false);
 	}
+	
+    public static boolean disableDisconnectSpam;
 
+    private static void disableDisconnectSpam() {
+        disableDisconnectSpam = getBoolean("settings.disable-disconnect-spam", true);
+    }
+    
 }
