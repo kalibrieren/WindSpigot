@@ -183,6 +183,9 @@ public class WindSpigot {
 	}
 	
 	public static WindSpigot getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new WindSpigot();
+		}
 		return INSTANCE;
 	}
 }
