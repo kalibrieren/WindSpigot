@@ -38,7 +38,6 @@ import ga.windpvp.windspigot.entity.EntityTickLimiter;
 import ga.windpvp.windspigot.random.FastRandom;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.elier.nachospigot.config.NachoWorldConfig;
-import me.rastrian.dev.OptimizedWorldTileEntitySet;
 import me.rastrian.dev.PlayerMap;
 import me.suicidalkids.ion.movement.MovementCache;
 // WindSpigot end
@@ -71,7 +70,7 @@ public abstract class World implements IBlockAccess {
 	protected final Set<Entity> g = Sets.newHashSet(); // Paper
 	// public final List<TileEntity> h = Lists.newArrayList(); // PaperSpigot -
 	// Remove unused list
-	public final OptimizedWorldTileEntitySet tileEntityList = new OptimizedWorldTileEntitySet();
+	public final List<TileEntity> tileEntityList = Lists.newArrayList();
 	private final List<TileEntity> b = Lists.newArrayList();
 	private final Set<TileEntity> c = Sets.newHashSet();
 
@@ -1892,16 +1891,14 @@ public abstract class World implements IBlockAccess {
 
 		// Spigot start
 		int tilesThisCycle = 0;
-		Iterator<TileEntity> tileIterator = this.tileEntityList.tickIterator(this.getTime());
-		while (tileIterator.hasNext()) { // PaperSpigot - Disable tick limiters
-			tileTickPosition = (tileTickPosition < tileEntityList.size()) ? tileTickPosition : 0;
-			TileEntity tileentity = tileIterator.next();
+		for (tileTickPosition = 0; tileTickPosition < tileEntityList.size(); tileTickPosition++) { // PaperSpigot - Disable tick limiters
+			TileEntity tileentity = this.tileEntityList.get(tileTickPosition);
 			// Spigot start
 			if (tileentity == null) {
 				getServer().getLogger()
 						.severe("Spigot has detected a null entity and has removed it, preventing a crash");
 				tilesThisCycle--;
-				tileIterator.remove();
+				this.tileEntityList.remove(tileTickPosition--);
 				continue;
 			}
 			// Spigot end
@@ -1913,7 +1910,7 @@ public abstract class World implements IBlockAccess {
 					try {
 						if (this.getTileEntity(tileentity.getPosition()) == null) {
 							// [Nacho-Spigot] Spawner fix
-							tileIterator.remove();
+							tileEntityList.remove(tileentity);
 							continue;
 						}
 						tileentity.tickTimer.startTiming(); // Spigot
@@ -1926,7 +1923,7 @@ public abstract class World implements IBlockAccess {
 								+ tileentity.position.getZ());
 						throwable2.printStackTrace();
 						tilesThisCycle--;
-						tileIterator.remove();
+						this.tileEntityList.remove(tileTickPosition--);
 						continue;
 						// PaperSpigot end
 					}
@@ -1940,7 +1937,7 @@ public abstract class World implements IBlockAccess {
 
 			if (tileentity.x()) {
 				tilesThisCycle--;
-				tileIterator.remove();
+				this.tileEntityList.remove(tileTickPosition--);
 				// this.h.remove(tileentity); // PaperSpigot - Remove unused list
 				if (this.isLoaded(tileentity.getPosition())) {
 					this.getChunkAtWorldCoords(tileentity.getPosition()).e(tileentity.getPosition());
