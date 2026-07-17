@@ -228,7 +228,7 @@ public final class CraftServer implements Server {
 				Lists.transform(playerList.players, net.minecraft.server.EntityPlayer::getBukkitEntity));
 		// WindSpigot start - manual versioning
 		if (serverName.equalsIgnoreCase("WindSpigot")) {
-			this.serverVersion = serverName + " Release v2.1.3"; // Bump this every release
+			this.serverVersion = serverName + " Release v2.1.4"; // Bump this every release
 		} else {
 			this.serverVersion = serverName; // Only put the release version if the server version is default
 		}
