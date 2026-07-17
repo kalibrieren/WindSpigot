@@ -1158,6 +1158,7 @@ public class WorldServer extends World implements IAsyncTaskHandler {
 			EntityHuman entityhuman = (EntityHuman) iterator.next();
 
 			if (entityhuman.e(d0, d1, d2) < 4096.0D) {
+				// WindSpigot start - Explosion animation toggle
 				EntityPlayer entityplayer = (EntityPlayer) entityhuman;
 				Vec3D knockback = explosion.b().get(entityhuman);
 
@@ -1167,6 +1168,7 @@ public class WorldServer extends World implements IAsyncTaskHandler {
 				} else if (knockback != null) {
 					entityplayer.playerConnection.sendPacket(new PacketPlayOutEntityVelocity(entityplayer));
 				}
+				// WindSpigot end
 			}
 		}
 
