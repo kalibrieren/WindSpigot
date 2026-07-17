@@ -141,9 +141,6 @@ public abstract class MinecraftServer extends ReentrantIAsyncHandler<TasksPerTic
 	public java.util.Queue<Runnable> priorityProcessQueue = new java.util.concurrent.ConcurrentLinkedQueue<Runnable>(); // WindSpigot
 	public int autosavePeriod;
 	// CraftBukkit end
-
-	// WindSpigot - instance
-	protected WindSpigot windSpigot;
 	
 	// WindSpigot - MSPT for tps command
 	private double lastMspt;
@@ -1718,7 +1715,7 @@ public abstract class MinecraftServer extends ReentrantIAsyncHandler<TasksPerTic
 	
 	// WindSpigot - instance
 	public WindSpigot getWindSpigot() {
-		return this.windSpigot;
+		return WindSpigot.getInstance();
 	}
 	
 	// WindSpigot - MSPT (milliseconds per tick)

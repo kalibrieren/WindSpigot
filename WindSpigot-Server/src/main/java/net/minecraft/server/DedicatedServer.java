@@ -217,6 +217,8 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
 				}
 			}
 
+			WindSpigot.init(); // WindSpigot
+			
 			// Spigot Start - Move DedicatedPlayerList up and bring plugin loading from
 			// CraftServer to here
 			// this.a((PlayerList) (new DedicatedPlayerList(this))); // CraftBukkit
@@ -366,9 +368,6 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
 				 * ThreadWatchdog(this)); thread1.setName("Server Watchdog");
 				 * thread1.setDaemon(true); thread1.start(); }
 				 */
-
-				this.windSpigot = new WindSpigot(); // WindSpigot
-
 				return true;
 			}
 		}
