@@ -27,8 +27,11 @@ public final class SpawnerCreature {
             Long coord = it.next();
             int x = LongHash.msw(coord);
             int z = LongHash.lsw(coord);
-            if (!server.chunkProviderServer.unloadQueue.contains(coord) && server.isChunkLoaded(x, z, true)) {
-                i += server.getChunkAt(x, z).entityCount.get(oClass);
+			// FalchusSpigot start
+			Chunk c = server.getChunkIfLoaded(x, z);
+            if (c != null) {
+                i += c.entityCount.get(oClass);
+			// FalchusSpigot end
             }
         }
         return i;
