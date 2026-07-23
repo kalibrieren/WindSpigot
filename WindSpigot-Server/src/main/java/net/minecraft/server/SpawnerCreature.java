@@ -22,41 +22,17 @@ public final class SpawnerCreature {
 
 	// Spigot start - get entity count only from chunks being processed in b
 	private int getEntityCount(WorldServer server, Class oClass) {
-		// NachoSpigot start - remove Steam
-		int sum = 0;
-		for (ObjectIterator<Chunk> objectIterator = (server.chunkProviderServer).chunks.values()
-				.iterator(); objectIterator.hasNext();) {
-			Chunk c = objectIterator.next();
-			sum += c.entityCount.get(oClass);
-		}
-		return sum;
-		// NachoSpigot end
-
-		// TacoSpigot start - use entire world, not just active chunks. Spigot broke
-		// vanilla expectations.
-//        if (true) {
-//
-//            server.chunkProviderServer.chunks.values().iterator()
-//            return server
-//                    .chunkProviderServer
-//                    .chunks.values()
-//                    .stream()
-//                    .collect(java.util.stream.Collectors.summingInt(c -> c.entityCount.get(oClass)));
-//        }
-//        // TacoSpigot end
-//        int i = 0;
-//        Iterator<Long> it = this.b.iterator();
-//        while ( it.hasNext() )
-//        {
-//            Long coord = it.next();
-//            int x = LongHash.msw( coord );
-//            int z = LongHash.lsw( coord );
-//            if ( !server.chunkProviderServer.unloadQueue.contains( coord ) && server.isChunkLoaded( x, z, true ) )
-//            {
-//                i += server.getChunkAt( x, z ).entityCount.get( oClass );
-//            }
-//        }
-//        return i;
+        int i = 0;
+        Iterator<Long> it = this.b.iterator();
+        while (it.hasNext()) {
+            Long coord = it.next();
+            int x = LongHash.msw(coord);
+            int z = LongHash.lsw(coord);
+            if (!server.chunkProviderServer.unloadQueue.contains(coord) && server.isChunkLoaded(x, z, true)) {
+                i += server.getChunkAt(x, z).entityCounts.getCount(oClass);
+            }
+        }
+        return i;
 	}
 	// Spigot end
 
