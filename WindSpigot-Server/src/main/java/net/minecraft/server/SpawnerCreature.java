@@ -28,7 +28,7 @@ public final class SpawnerCreature {
             int x = LongHash.msw(coord);
             int z = LongHash.lsw(coord);
             if (!server.chunkProviderServer.unloadQueue.contains(coord) && server.isChunkLoaded(x, z, true)) {
-                i += server.getChunkAt(x, z).entityCounts.get(oClass);
+                i += server.getChunkAt(x, z).entityCount.get(oClass);
             }
         }
         return i;
