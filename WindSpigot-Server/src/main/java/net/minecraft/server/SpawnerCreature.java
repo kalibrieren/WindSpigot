@@ -10,7 +10,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 // CraftBukkit end
 
 // CraftBukkit start
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 public final class SpawnerCreature {
 
