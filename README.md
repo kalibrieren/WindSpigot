@@ -43,6 +43,7 @@ See the patches list below.
 [WindSpigot-0016] Configurable weather changes
 [WindSpigot-0017] Configurable fishing rod speed multiplier
 
+[PandaSpigot-0072] Fix Bugs with Spigot Mob Spawn Logic
 [PandaSpigot-0115] Break up and make tab spam limits configurable
 
 [Spigot-0097] Remove DataWatcher Locking by spottedleaf
