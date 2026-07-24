@@ -92,7 +92,6 @@ See the patches list below.
 [Paper-????] Cleanup allocated favicon ByteBuf by Shane Freeder
 
 <--> by Heath
-[Nacho-0001] Remove stream usage when counting entities
 [Nacho-0002] Check if the fuel is coal first before checking others
 [Nacho-0003] Disable Snooper
 [Nacho-0004] Do not repeatily allocate EnumDirection
