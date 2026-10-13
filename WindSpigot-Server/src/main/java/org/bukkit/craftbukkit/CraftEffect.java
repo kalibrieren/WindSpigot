@@ -41,7 +41,7 @@ public class CraftEffect {
 	/**
 	 * Maps a {@link BlockFace} to the 1.8 smoke effect data byte (0–8).
 	 */
-	static int smokeDataValue(BlockFace face) {
+	public static int smokeDataValue(BlockFace face) {
 		switch (face) {
 		case NORTH_WEST:
 		case NORTH:
