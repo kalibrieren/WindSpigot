@@ -66,7 +66,12 @@ public class Cake extends MaterialData {
 	public void setSlicesEaten(int n) {
 		if (n < 6) {
 			setData((byte) n);
-		} // TODO: else destroy the block? Probably not possible though
+		} else {
+			// MaterialData is type+data only — no Block/World, so it cannot destroy
+			// the placed cake. On 1.8.8 BITES is 0–6; clamp to fully-eaten metadata.
+			// BlockCake removes the block via world.setAir when eating exhausts bites.
+			setData((byte) 6);
+		}
 	}
 
 	/**
