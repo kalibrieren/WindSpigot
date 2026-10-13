@@ -7,25 +7,34 @@ import java.util.Random;
 import org.bukkit.event.entity.SheepRegrowWoolEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.InventoryView;
+
+import com.windpvp.windspigot.inventory.SheepDyeCraftView;
 // CraftBukkit end
 
 import com.google.common.collect.Maps;
 
 public class EntitySheep extends EntityAnimal {
 
-	private final InventoryCrafting bm = new InventoryCrafting(new Container() {
+	// CraftBukkit start - dye-mix matrix is never player-opened; synthetic view
+	// replaces legacy "return null; // TODO: O.O" so PrepareItemCraftEvent during
+	// breeding is not handed a null / stale player craft view.
+	private InventoryView sheepBukkitView;
+	private final Container sheepColorMix = new Container() {
 		@Override
 		public boolean a(EntityHuman entityhuman) {
 			return false;
 		}
 
-		// CraftBukkit start
 		@Override
 		public InventoryView getBukkitView() {
-			return null; // TODO: O.O
+			if (sheepBukkitView == null) {
+				sheepBukkitView = SheepDyeCraftView.create(EntitySheep.this.bm);
+			}
+			return sheepBukkitView;
 		}
-		// CraftBukkit end
-	}, 2, 1);
+	};
+	private final InventoryCrafting bm = new InventoryCrafting(this.sheepColorMix, 2, 1);
+	// CraftBukkit end
 	private static final Map<EnumColor, float[]> bo = Maps.newEnumMap(EnumColor.class);
 	private int bp;
 	private PathfinderGoalEatTile bq = new PathfinderGoalEatTile(this);
@@ -245,7 +254,18 @@ public class EntitySheep extends EntityAnimal {
 
 		this.bm.getItem(0).setData(i);
 		this.bm.getItem(1).setData(j);
-		ItemStack itemstack = CraftingManager.getInstance().craft(this.bm, ((EntitySheep) entityanimal).world);
+		// CraftBukkit start - pin lastCraftView to this sheep's dye matrix for the
+		// PrepareItemCraftEvent fired by CraftingManager.craft (restore after).
+		CraftingManager crafting = CraftingManager.getInstance();
+		InventoryView previousView = crafting.lastCraftView;
+		crafting.lastCraftView = this.sheepColorMix.getBukkitView();
+		ItemStack itemstack;
+		try {
+			itemstack = crafting.craft(this.bm, ((EntitySheep) entityanimal).world);
+		} finally {
+			crafting.lastCraftView = previousView;
+		}
+		// CraftBukkit end
 		int k;
 
 		if (itemstack != null && itemstack.getItem() == Items.DYE) {
