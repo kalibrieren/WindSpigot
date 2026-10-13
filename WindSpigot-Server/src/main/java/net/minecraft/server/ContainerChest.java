@@ -3,6 +3,8 @@ package net.minecraft.server;
 // CraftBukkit start
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
+
+import com.windpvp.windspigot.inventory.InventoryCasts;
 // CraftBukkit end
 
 public class ContainerChest extends Container {
@@ -40,9 +42,9 @@ public class ContainerChest extends Container {
 		iinventory1.startOpen(entityhuman);
 		int i = (this.f - 4) * 18;
 
-		// CraftBukkit start - Save player
-		// TODO: Should we check to make sure it really is an InventoryPlayer?
-		this.player = (PlayerInventory) iinventory;
+		// CraftBukkit start - Save player (type-check; fall back to opener for atypical callers)
+		this.player = InventoryCasts.resolvePlayerInventory(iinventory,
+				entityhuman != null ? entityhuman.inventory : null, "ContainerChest");
 		// CraftBukkit end
 
 		int j;

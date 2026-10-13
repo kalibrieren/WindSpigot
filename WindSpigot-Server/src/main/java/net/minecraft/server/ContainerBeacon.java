@@ -2,6 +2,8 @@ package net.minecraft.server;
 
 import org.bukkit.craftbukkit.inventory.CraftInventoryView; // CraftBukkit
 
+import com.windpvp.windspigot.inventory.InventoryCasts; // CraftBukkit
+
 public class ContainerBeacon extends Container {
 
 	private IInventory beacon;
@@ -12,7 +14,7 @@ public class ContainerBeacon extends Container {
 	// CraftBukkit end
 
 	public ContainerBeacon(IInventory iinventory, IInventory iinventory1) {
-		player = (PlayerInventory) iinventory; // CraftBukkit - TODO: check this
+		player = InventoryCasts.requirePlayerInventory(iinventory, "ContainerBeacon"); // CraftBukkit
 		this.beacon = iinventory1;
 		this.a(this.f = new ContainerBeacon.SlotBeacon(iinventory1, 0, 136, 110));
 		byte b0 = 36;
@@ -136,8 +138,8 @@ public class ContainerBeacon extends Container {
 			return bukkitEntity;
 		}
 
-		org.bukkit.craftbukkit.inventory.CraftInventory inventory = new org.bukkit.craftbukkit.inventory.CraftInventoryBeacon(
-				(TileEntityBeacon) this.beacon); // TODO - check this
+		org.bukkit.craftbukkit.inventory.CraftInventory inventory = InventoryCasts
+				.craftInventoryForBeacon(this.beacon);
 		bukkitEntity = new CraftInventoryView(this.player.player.getBukkitEntity(), inventory, this);
 		return bukkitEntity;
 	}

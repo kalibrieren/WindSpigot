@@ -9,6 +9,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import com.windpvp.windspigot.inventory.InventoryCasts;
+
 import net.minecraft.server.Container;
 
 public class CraftInventoryView extends InventoryView {
@@ -17,10 +19,8 @@ public class CraftInventoryView extends InventoryView {
 	private final CraftInventory viewing;
 
 	public CraftInventoryView(HumanEntity player, Inventory viewing, Container container) {
-		// TODO: Should we make sure it really IS a CraftHumanEntity first? And a
-		// CraftInventory?
-		this.player = (CraftHumanEntity) player;
-		this.viewing = (CraftInventory) viewing;
+		this.player = InventoryCasts.requireCraftHumanEntity(player);
+		this.viewing = InventoryCasts.requireCraftInventory(viewing);
 		this.container = container;
 	}
 
