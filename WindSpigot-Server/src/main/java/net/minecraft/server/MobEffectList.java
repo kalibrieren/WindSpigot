@@ -101,6 +101,20 @@ public class MobEffectList {
 				.registerPotionEffectType(new org.bukkit.craftbukkit.potion.CraftPotionEffectType(this)); // CraftBukkit
 	}
 
+	/**
+	 * Forces class initialization so every vanilla mob effect registers its
+	 * CraftBukkit wrapper with the Bukkit API. Call before
+	 * {@link org.bukkit.potion.PotionEffectType#stopAcceptingRegistrations()}.
+	 * Prefer this over touching a static field via {@code .getClass()}.
+	 */
+	public static void ensureBukkitRegistration() {
+		// Method resolution initializes this class (static fields + CraftPotionEffectType
+		// registration). Assert a known entry so a broken static init fails loudly.
+		if (MobEffectList.BLINDNESS == null || MobEffectList.byId[MobEffectList.BLINDNESS.id] == null) {
+			throw new IllegalStateException("NMS MobEffectList failed to initialize");
+		}
+	}
+
 	public static MobEffectList b(String s) {
 		return MobEffectList.I.get(new MinecraftKey(s));
 	}

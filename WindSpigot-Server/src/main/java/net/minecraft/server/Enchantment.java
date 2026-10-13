@@ -58,6 +58,20 @@ public abstract class Enchantment {
 		return i >= 0 && i < Enchantment.byId.length ? Enchantment.byId[i] : null;
 	}
 
+	/**
+	 * Forces class initialization so every vanilla enchantment registers its
+	 * CraftBukkit wrapper with the Bukkit API. Call before
+	 * {@link org.bukkit.enchantments.Enchantment#stopAcceptingRegistrations()}.
+	 * Prefer this over touching a static field via {@code .getClass()}.
+	 */
+	public static void ensureBukkitRegistration() {
+		// Method resolution initializes this class (static fields + CraftEnchantment
+		// registration). Assert a known entry so a broken static init fails loudly.
+		if (Enchantment.DAMAGE_ALL == null || Enchantment.b == null || Enchantment.b.length == 0) {
+			throw new IllegalStateException("NMS Enchantment failed to initialize");
+		}
+	}
+
 	protected Enchantment(int i, MinecraftKey minecraftkey, int j, EnchantmentSlotType enchantmentslottype) {
 		this.id = i;
 		this.weight = j;

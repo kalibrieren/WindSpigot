@@ -238,14 +238,15 @@ public final class CraftServer implements Server {
 		Bukkit.setServer(this);
 
 		// Register all the Enchantments and PotionTypes now so we can stop new
-		// registration immediately after
-		Enchantment.DAMAGE_ALL.getClass();
+		// registration immediately after. ensureBukkitRegistration() forces NMS
+		// class init (Craft* wrappers register in constructors); freezing preserves
+		// the Bukkit contract that only the server implementation may add types.
+		Enchantment.ensureBukkitRegistration();
 		org.bukkit.enchantments.Enchantment.stopAcceptingRegistrations();
 
 		Potion.setPotionBrewer(new CraftPotionBrewer());
-		MobEffectList.BLINDNESS.getClass();
+		MobEffectList.ensureBukkitRegistration();
 		PotionEffectType.stopAcceptingRegistrations();
-		// Ugly hack :(
 
 		if (!Main.useConsole) {
 			getLogger().info("Console input is disabled due to --noconsole command argument");
