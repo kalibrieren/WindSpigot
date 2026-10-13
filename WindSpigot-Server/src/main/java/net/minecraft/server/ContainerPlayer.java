@@ -4,6 +4,7 @@ package net.minecraft.server;
 import org.bukkit.craftbukkit.inventory.CraftInventoryCrafting;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 // CraftBukkit end
+import com.windpvp.windspigot.inventory.CraftResultListener;
 
 public class ContainerPlayer extends Container {
 
@@ -77,11 +78,11 @@ public class ContainerPlayer extends Container {
 		CraftingManager.getInstance().lastCraftView = getBukkitView();
 		ItemStack craftResult = CraftingManager.getInstance().craft(this.craftInventory, this.h.world);
 		this.resultInventory.setItem(0, craftResult);
-		if (super.listeners.size() < 1) {
+		// Prefer the container owner over listeners.get(0) — another ICrafting may be first.
+		EntityPlayer player = CraftResultListener.findOwningListener(this.h, super.listeners, EntityPlayer.class);
+		if (player == null) {
 			return;
 		}
-
-		EntityPlayer player = (EntityPlayer) super.listeners.get(0); // TODO: Is this _always_ correct? Seems like it.
 		player.playerConnection.sendPacket(new PacketPlayOutSetSlot(player.activeContainer.windowId, 0, craftResult));
 		// CraftBukkit end
 	}

@@ -4,6 +4,7 @@ package net.minecraft.server;
 import org.bukkit.craftbukkit.inventory.CraftInventoryCrafting;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 // CraftBukkit end
+import com.windpvp.windspigot.inventory.CraftResultListener;
 
 public class ContainerWorkbench extends Container {
 
@@ -58,14 +59,16 @@ public class ContainerWorkbench extends Container {
 		CraftingManager.getInstance().lastCraftView = getBukkitView();
 		ItemStack craftResult = CraftingManager.getInstance().craft(this.craftInventory, this.g);
 		this.resultInventory.setItem(0, craftResult);
-		if (super.listeners.size() < 1) {
-			return;
-		}
 		// See CraftBukkit PR #39
 		if (craftResult != null && craftResult.getItem() == Items.FILLED_MAP) {
 			return;
 		}
-		EntityPlayer player = (EntityPlayer) super.listeners.get(0); // TODO: Is this _always_ correct? Seems like it.
+		// Prefer the container owner over listeners.get(0) — another ICrafting may be first.
+		EntityPlayer player = CraftResultListener.findOwningListener(this.player.player, super.listeners,
+				EntityPlayer.class);
+		if (player == null) {
+			return;
+		}
 		player.playerConnection.sendPacket(new PacketPlayOutSetSlot(player.activeContainer.windowId, 0, craftResult));
 		// CraftBukkit end
 	}
