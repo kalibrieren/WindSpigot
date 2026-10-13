@@ -1,7 +1,8 @@
-package com.windpvp.windspigot.inventory;
+package org.bukkit.craftbukkit.inventory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
@@ -59,6 +59,6 @@ public class CraftInventoryRemoveOptimizeTest {
 
 		// Sibling scope: add-path optimization TODO must remain.
 		String addHeader = text.substring(addIdx, Math.min(text.length(), addIdx + 400));
-		org.junit.Assert.assertTrue(addHeader.contains("TODO: some optimization"));
+		assertTrue(addHeader.contains("TODO: some optimization"));
 	}
 }
