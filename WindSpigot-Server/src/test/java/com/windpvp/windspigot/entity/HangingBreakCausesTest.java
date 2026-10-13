@@ -89,4 +89,27 @@ public class HangingBreakCausesTest {
 		Assert.assertTrue("frame depth should be thinner than one block", (bb.f - bb.c) < 1.0D);
 		Assert.assertTrue("frame width should be thinner than one block", (bb.d - bb.a) < 1.0D);
 	}
+
+	@Test
+	public void pistonPushMapsToPistonNotPhysics() {
+		// EntityHanging.move() is piston-only in vanilla; must not reuse PHYSICS
+		// (support destroyed) so plugins can distinguish frame griefing paths.
+		Assert.assertEquals(HangingBreakEvent.RemoveCause.PISTON, HangingBreakCauses.forPistonPush());
+		Assert.assertNotEquals(HangingBreakEvent.RemoveCause.PHYSICS, HangingBreakCauses.forPistonPush());
+		Assert.assertNotEquals(HangingBreakEvent.RemoveCause.OBSTRUCTION, HangingBreakCauses.forPistonPush());
+	}
+
+	@Test
+	public void pistonCauseIsDistinctEnumConstant() {
+		HangingBreakEvent.RemoveCause[] values = HangingBreakEvent.RemoveCause.values();
+		boolean found = false;
+		for (HangingBreakEvent.RemoveCause value : values) {
+			if (value == HangingBreakEvent.RemoveCause.PISTON) {
+				found = true;
+				break;
+			}
+		}
+		Assert.assertTrue("PISTON must be a HangingBreakEvent.RemoveCause constant", found);
+		Assert.assertEquals("PISTON", HangingBreakEvent.RemoveCause.PISTON.name());
+	}
 }

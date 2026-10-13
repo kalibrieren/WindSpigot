@@ -249,9 +249,10 @@ public abstract class EntityHanging extends Entity {
 			}
 
 			// CraftBukkit start - fire break events
-			// TODO - Does this need its own cause? Seems to only be triggered by pistons
+			// Non-zero move() on hangings is piston push (TileEntityPiston); PHYSICS is for
+			// support/overlap via survives(), so use a dedicated PISTON cause.
 			HangingBreakEvent event = new HangingBreakEvent((Hanging) this.getBukkitEntity(),
-					HangingBreakEvent.RemoveCause.PHYSICS);
+					HangingBreakCauses.forPistonPush());
 			this.world.getServer().getPluginManager().callEvent(event);
 
 			if (this.dead || event.isCancelled()) {

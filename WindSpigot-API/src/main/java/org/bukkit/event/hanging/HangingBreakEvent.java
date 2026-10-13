@@ -55,6 +55,11 @@ public class HangingBreakEvent extends HangingEvent implements Cancellable {
 		 */
 		PHYSICS,
 		/**
+		 * Removed by a piston pushing the hanging entity
+		 * ({@code EntityHanging#move}, used by piston tile entities)
+		 */
+		PISTON,
+		/**
 		 * Removed by an uncategorised cause
 		 */
 		DEFAULT,
