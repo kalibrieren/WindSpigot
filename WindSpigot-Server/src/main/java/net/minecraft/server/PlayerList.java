@@ -961,8 +961,9 @@ public abstract class PlayerList {
 		} else {
 			BlockPosition blockposition;
 
-			if (i == 1) {
-				// use default NORMAL world spawn instead of target
+			// End portal while already in The End → Overworld spawn (not teleportTo)
+			if (com.windpvp.windspigot.entity.PortalEndReturn.usesOverworldSpawn(i,
+					worldserver1.dimension)) {
 				worldserver1 = this.server.worlds.get(0);
 				blockposition = worldserver1.getSpawn();
 			} else {
