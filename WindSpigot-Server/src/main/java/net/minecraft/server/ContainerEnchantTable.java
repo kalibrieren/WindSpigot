@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 
+import com.windpvp.windspigot.enchant.EnchantLapisCost;
+
 public class ContainerEnchantTable extends Container {
 
 	// CraftBukkit - make type specific (changed from IInventory)
@@ -248,9 +250,15 @@ public class ContainerEnchantTable extends Container {
 					this.world.getServer().getPluginManager().callEvent(event);
 
 					int level = event.getExpLevelCost();
+					int lapisCost = event.getItemCost();
+					// Re-read cost slot in case a plugin mutated the view during the event
+					itemstack1 = this.enchantSlots.getItem(1);
+					int lapisAvailable = itemstack1 == null ? 0 : itemstack1.count;
 					if (event.isCancelled()
 							|| (level > entityhuman.expLevel && !entityhuman.abilities.canInstantlyBuild)
-							|| event.getEnchantsToAdd().isEmpty()) {
+							|| event.getEnchantsToAdd().isEmpty()
+							|| !EnchantLapisCost.canAfford(entityhuman.abilities.canInstantlyBuild, lapisAvailable,
+									lapisCost)) {
 						return false;
 					}
 					if (flag) {
@@ -280,9 +288,9 @@ public class ContainerEnchantTable extends Container {
 					entityhuman.enchantDone(j);
 					// CraftBukkit end
 
-					// CraftBukkit - TODO: let plugins change this
-					if (!entityhuman.abilities.canInstantlyBuild) {
-						itemstack1.count -= j;
+					// CraftBukkit / WindSpigot - plugins may change lapis cost via EnchantItemEvent#setItemCost
+					if (!entityhuman.abilities.canInstantlyBuild && lapisCost > 0) {
+						itemstack1.count = EnchantLapisCost.remainingAfterConsume(itemstack1.count, lapisCost);
 						if (itemstack1.count <= 0) {
 							this.enchantSlots.setItem(1, (ItemStack) null);
 						}
