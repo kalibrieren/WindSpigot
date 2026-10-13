@@ -1216,8 +1216,9 @@ public abstract class Entity implements ICommandListener {
 		this.P = this.lastX = this.locX = d0;
 		this.Q = this.lastY = this.locY = d1;
 		this.R = this.lastZ = this.locZ = d2;
-		this.yaw = f;
-		this.pitch = f1;
+		// WindSpigot - this path assigns yaw/pitch without setYawPitch; sanitize NaN/Inf
+		this.yaw = com.windpvp.windspigot.entity.EntityRotation.sanitize(f);
+		this.pitch = com.windpvp.windspigot.entity.EntityRotation.sanitize(f1);
 		this.setPosition(this.locX, this.locY, this.locZ);
 	}
 
@@ -1415,16 +1416,12 @@ public abstract class Entity implements ICommandListener {
 			nbttagcompound.set("Pos", this.a(new double[] { this.locX, this.locY, this.locZ }));
 			nbttagcompound.set("Motion", this.a(new double[] { this.motX, this.motY, this.motZ }));
 
-			// CraftBukkit start - Checking for NaN pitch/yaw and resetting to zero
-			// TODO: make sure this is the best way to address this.
-			if (Float.isNaN(this.yaw)) {
-				this.yaw = 0;
-			}
-
-			if (Float.isNaN(this.pitch)) {
-				this.pitch = 0;
-			}
-			// CraftBukkit end
+			// CraftBukkit / WindSpigot - defense-in-depth for Rotation NBT.
+			// setYawPitch already rejects NaN/Inf, but setPositionRotation and other
+			// direct field writes can still leave non-finite yaw/pitch in memory.
+			// Sanitizing here (NaN + Inf → 0) is intentional, not a temporary hack.
+			this.yaw = com.windpvp.windspigot.entity.EntityRotation.sanitize(this.yaw);
+			this.pitch = com.windpvp.windspigot.entity.EntityRotation.sanitize(this.pitch);
 
 			nbttagcompound.set("Rotation", this.a(new float[] { this.yaw, this.pitch }));
 			nbttagcompound.setFloat("FallDistance", this.fallDistance);
