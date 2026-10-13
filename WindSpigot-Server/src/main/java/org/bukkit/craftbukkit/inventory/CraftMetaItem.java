@@ -42,6 +42,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+import com.windpvp.windspigot.inventory.RepairCostLimits;
 
 import net.minecraft.server.GenericAttributes;
 import net.minecraft.server.IAttribute;
@@ -266,7 +267,7 @@ class CraftMetaItem implements ItemMeta, Repairable {
 		this.enchantments = buildEnchantments(tag, ENCHANTMENTS);
 
 		if (tag.hasKey(REPAIR.NBT)) {
-			repairCost = tag.getInt(REPAIR.NBT);
+			repairCost = RepairCostLimits.apply(tag.getInt(REPAIR.NBT));
 		}
 
 		if (tag.hasKey(HIDEFLAGS.NBT)) {
@@ -648,7 +649,7 @@ class CraftMetaItem implements ItemMeta, Repairable {
 
 	@Override
 	public boolean hasRepairCost() {
-		return repairCost > 0;
+		return RepairCostLimits.isPresent(repairCost);
 	}
 
 	@Override
@@ -764,8 +765,10 @@ class CraftMetaItem implements ItemMeta, Repairable {
 	}
 
 	@Override
-	public void setRepairCost(int cost) { // TODO: Does this have limits?
-		repairCost = cost;
+	public void setRepairCost(int cost) {
+		// No Bukkit/API limits: vanilla NBT int parity. Anvil "too expensive" (40)
+		// caps XP for the current operation, not this persistent penalty.
+		repairCost = RepairCostLimits.apply(cost);
 	}
 
 	@Override
