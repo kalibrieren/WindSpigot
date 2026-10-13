@@ -38,6 +38,7 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import com.eatthepath.uuid.FastUUID;
 import com.windpvp.windspigot.cache.Constants;
 import com.windpvp.windspigot.config.WindSpigotConfig;
+import com.windpvp.windspigot.entity.LavaCombust;
 import com.windpvp.windspigot.random.FastRandom;
 
 import co.aikar.timings.SpigotTimings; // Spigot
@@ -430,16 +431,14 @@ public abstract class Entity implements ICommandListener {
 			this.damageEntity(DamageSource.LAVA, 4.0F);
 
 			// CraftBukkit start - Fallen in lava (Paper: fire once + real combuster block)
-			if (com.windpvp.windspigot.entity.LavaCombust.shouldCallCombustEvent(this instanceof EntityLiving,
-					this.fireTicks)) {
+			if (LavaCombust.shouldCallCombustEvent(this instanceof EntityLiving, this.fireTicks)) {
 				org.bukkit.block.Block damager = null;
 				if (this.lastLavaContact != null) {
 					damager = this.world.getWorld().getBlockAt(this.lastLavaContact.getX(), this.lastLavaContact.getY(),
 							this.lastLavaContact.getZ());
 				}
 				org.bukkit.entity.Entity damagee = this.getBukkitEntity();
-				EntityCombustEvent combustEvent = com.windpvp.windspigot.entity.LavaCombust.createEvent(damager,
-						damagee, 15);
+				EntityCombustEvent combustEvent = LavaCombust.createEvent(damager, damagee, 15);
 				this.world.getServer().getPluginManager().callEvent(combustEvent);
 
 				if (!combustEvent.isCancelled()) {
