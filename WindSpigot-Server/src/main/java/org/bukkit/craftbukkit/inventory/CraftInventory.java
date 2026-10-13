@@ -230,8 +230,20 @@ public class CraftInventory implements Inventory {
 		if (item == null) {
 			return -1;
 		}
-		ItemStack[] inventory = getContents();
-		for (int i = 0; i < inventory.length; i++) {
+		return first(item, withAmount, getContents(), 0);
+	}
+
+	/**
+	 * Find the first slot at or after {@code fromIndex} matching {@code item}.
+	 * Used by {@link #removeItem} so each clear can resume scanning instead of
+	 * restarting from slot 0 (legacy {@code // TODO: optimization}).
+	 */
+	static int first(ItemStack item, boolean withAmount, ItemStack[] inventory, int fromIndex) {
+		if (item == null || inventory == null) {
+			return -1;
+		}
+		int start = fromIndex < 0 ? 0 : fromIndex;
+		for (int i = start; i < inventory.length; i++) {
 			if (inventory[i] == null) {
 				continue;
 			}
@@ -353,14 +365,16 @@ public class CraftInventory implements Inventory {
 		Validate.notNull(items, "Items cannot be null");
 		HashMap<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
 
-		// TODO: optimization
-
 		for (int i = 0; i < items.length; i++) {
 			ItemStack item = items[i];
 			int toDelete = item.getAmount();
+			// Snapshot once; advance searchFrom after each cleared slot so we do not
+			// re-scan from index 0 on every while-iteration.
+			ItemStack[] inventory = getContents();
+			int searchFrom = 0;
 
 			while (true) {
-				int first = first(item, false);
+				int first = first(item, false, inventory, searchFrom);
 
 				// Drat! we don't have this type in the inventory
 				if (first == -1) {
@@ -375,6 +389,8 @@ public class CraftInventory implements Inventory {
 						toDelete -= amount;
 						// clear the slot, all used up
 						clear(first);
+						inventory[first] = null;
+						searchFrom = first + 1;
 					} else {
 						// split the stack and store
 						itemStack.setAmount(amount - toDelete);
