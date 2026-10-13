@@ -342,12 +342,14 @@ public class MemorySection implements ConfigurationSection {
 	// PaperSpigot start - Add getFloat
 	public float getFloat(String path) {
 		Object def = getDefault(path);
-		return getFloat(path, (def instanceof Float) ? toFloat(def) : 0);
+		// YAML stores floating-point values as Double; accept any Number (same as getDouble/getInt/getLong).
+		return getFloat(path, (def instanceof Number) ? toFloat(def) : 0);
 	}
 
 	public float getFloat(String path, float def) {
 		Object val = get(path, def);
-		return (val instanceof Float) ? toFloat(val) : def;
+		// YAML stores floating-point values as Double; accept any Number (same as getDouble/getInt/getLong).
+		return (val instanceof Number) ? toFloat(val) : def;
 	}
 
 	public boolean isFloat(String path) {
