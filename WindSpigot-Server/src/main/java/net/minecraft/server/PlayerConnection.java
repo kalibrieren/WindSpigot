@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 import com.windpvp.windspigot.inventory.WindowClickMapping;
+import com.windpvp.windspigot.security.CreativeItemFilter;
 // CraftBukkit start
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -55,6 +56,7 @@ import com.google.common.primitives.Floats;
 import com.windpvp.windspigot.WindSpigot;
 import com.windpvp.windspigot.config.WindSpigotConfig;
 import com.windpvp.windspigot.events.PlayerIllegalBehaviourEvent;
+import com.windpvp.windspigot.security.BookNbtValidator;
 
 import co.aikar.timings.SpigotTimings; // Spigot
 import io.netty.buffer.Unpooled;
@@ -126,12 +128,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 		return (this.player == null) ? null : (CraftPlayer) this.player.getBukkitEntity();
 	}
 
-	private final static HashSet<Integer> invalidItems = new HashSet<Integer>(
-			java.util.Arrays.asList(8, 9, 10, 11, 26, 34, 36, 43, 51, 52, 55, 59, 60, 62, 63, 64, 68, 71, 74, 75, 83,
-					90, 92, 93, 94, 104, 105, 115, 117, 118, 119, 125, 127, 132, 140, 141, 142, 144)); // TODO: Check
-																										// after every
-																										// update.
-	// CraftBukkit end
+	// CraftBukkit end — creative filter: see CreativeItemFilter (Material-derived; replaces hardcoded ID TODO)
 
 	@Override
 	public void c() {
@@ -2221,9 +2218,9 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 
 			boolean flag1 = packetplayinsetcreativeslot.a() >= 1
 					&& packetplayinsetcreativeslot.a() < 36 + PlayerInventory.getHotbarSize();
-			// CraftBukkit - Add invalidItems check
+			// CraftBukkit - reject technical / non-inventory block IDs in creative slots
 			boolean flag2 = itemstack == null
-					|| itemstack.getItem() != null && (!invalidItems.contains(Item.getId(itemstack.getItem()))
+					|| itemstack.getItem() != null && (!CreativeItemFilter.isForbidden(Item.getId(itemstack.getItem()))
 							|| !org.spigotmc.SpigotConfig.filterCreativeItems); // Spigot
 			boolean flag3 = itemstack == null
 					|| itemstack.getData() >= 0 && itemstack.count <= 64 && itemstack.count > 0;
@@ -2445,7 +2442,9 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 					} else {
 						throw new IOException("Packet influx");
 					}
-					// TODO Check NBT data here
+					// WindSpigot - Validate book NBT (size/depth/types/keys) before handling
+					BookNbtValidator.validateBookPayload(packetplayincustompayload.b(),
+							"MC|BSign".equals(channelName));
 				}
 			} catch (Throwable ex) {
 				this.isExploiter = true;
@@ -2459,6 +2458,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 					disconnect("Book edited too quickly!");
 					return;
 				}
+				this.lastBookTick = MinecraftServer.currentTick; // WindSpigot - book edit cooldown
 
 				serializer = new PacketDataSerializer(Unpooled.wrappedBuffer(packetplayincustompayload.b()));
 
@@ -2468,7 +2468,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 						return;
 					}
 
-					if (!ItemBookAndQuill.b(itemstack.getTag())) {
+					if (!ItemBookAndQuill.b(itemstack.getTag()) || !BookNbtValidator.isValidBookItem(itemstack, false)) {
 						throw new IOException("Invalid book tag!");
 					}
 
@@ -2496,6 +2496,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 					disconnect("Book edited too quickly!");
 					return;
 				}
+				this.lastBookTick = MinecraftServer.currentTick; // WindSpigot - book sign cooldown
 				serializer = new PacketDataSerializer(Unpooled.wrappedBuffer(packetplayincustompayload.b()));
 
 				try {
@@ -2504,7 +2505,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 						return;
 					}
 
-					if (!ItemWrittenBook.b(itemstack.getTag())) {
+					if (!ItemWrittenBook.b(itemstack.getTag()) || !BookNbtValidator.isValidBookItem(itemstack, true)) {
 						throw new IOException("Invalid book tag!");
 					}
 

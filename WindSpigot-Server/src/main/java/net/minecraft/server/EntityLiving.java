@@ -44,6 +44,13 @@ public abstract class EntityLiving extends Entity {
 	public int av;
 	public float aw;
 	public int deathTicks;
+	/**
+	 * WindSpigot: restored pre-1.8 {@code AttackTime} / {@code attackTicks}.
+	 * Mojang removed the field in 1.8 (cooldown moved into pathfinder goals), but
+	 * Spigot's entity-activation-range still needs an entity-level signal so mobs
+	 * are not deactivated mid melee-attack cooldown.
+	 */
+	public int attackTicks;
 	public float ay;
 	public float az;
 	public float aA;
@@ -261,6 +268,11 @@ public abstract class EntityLiving extends Entity {
 		this.aE = this.aF;
 		if (this.hurtTicks > 0) {
 			--this.hurtTicks;
+		}
+
+		// WindSpigot - pre-1.8 AttackTime countdown (ActivationRange immunity)
+		if (this.attackTicks > 0) {
+			--this.attackTicks;
 		}
 
 		if (this.noDamageTicks > 0 && !(this instanceof EntityPlayer)) {
@@ -1608,8 +1620,17 @@ public abstract class EntityLiving extends Entity {
 	}
 
 	public boolean r(Entity entity) {
+		this.markAttackCooldown();
 		this.p(entity);
 		return false;
+	}
+
+	/**
+	 * WindSpigot: start/refresh the restored {@link #attackTicks} melee cooldown
+	 * (20 ticks, matching pre-1.8 AttackTime and PathfinderGoalMeleeAttack).
+	 */
+	public void markAttackCooldown() {
+		this.attackTicks = 20;
 	}
 
 	public boolean isSleeping() {
@@ -1862,12 +1883,12 @@ public abstract class EntityLiving extends Entity {
 				} // Spigot
 				Entity entity = (Entity) list.get(i);
 
-				// TODO better check now?
-				// CraftBukkit start - Only handle mob (non-player) collisions every other tick
-				if (entity instanceof EntityLiving && !(this instanceof EntityPlayer) && this.ticksLived % 2 == 0) {
+				// WindSpigot - half-rate non-player living collisions via server tick (not ticksLived)
+				if (com.windpvp.windspigot.entity.LivingEntityCollisionSkip.shouldSkip(
+						this instanceof EntityPlayer, entity instanceof EntityLiving,
+						MinecraftServer.currentTick)) {
 					continue;
 				}
-				// CraftBukkit end
 
 				entity.numCollisions++; // Spigot
 				numCollisions++; // Spigot
